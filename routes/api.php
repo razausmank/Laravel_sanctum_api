@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\ApiController;
+use App\Http\Controllers\AuthController;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +22,22 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::get('/testing', function () {
-    return "hello";
+
+
+Route::get('/products', [ApiController::class, 'index']);
+Route::get('/products/{id}', [ApiController::class, 'show']);
+
+Route::get('/products/search/{name}', [ApiController::class, 'search']);
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+
+// protected routes
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('/products', [ApiController::class, 'store']);
+    Route::put('/products/{id}', [ApiController::class, 'update']);
+    Route::delete('/products/{id}', [ApiController::class, 'destroy']);
+
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
